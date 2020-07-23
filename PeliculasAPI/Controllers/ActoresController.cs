@@ -34,7 +34,7 @@ namespace PeliculasAPI.Controllers
             return _mapper.Map<List<ActorDTO>>(entidades);
         }
 
-        [HttpGet("{id}", Name ="obtenerAutor")]
+        [HttpGet("{id}", Name = "obtenerAutor")]
         public async Task<ActionResult<ActorDTO>> Get(int id)
         {
 
@@ -45,20 +45,20 @@ namespace PeliculasAPI.Controllers
                 return NotFound();
             }
 
-            return  _mapper.Map<ActorDTO>(entidad);
+            return _mapper.Map<ActorDTO>(entidad);
 
-            
+
         }
 
 
         [HttpPost]
-        public async Task<ActionResult> Post([FromBody] ActorCreacionDTO actorCreacionDTO)
+        public async Task<ActionResult> Post([FromForm] ActorCreacionDTO actorCreacionDTO)
         {
 
             var entidad = _mapper.Map<Actor>(actorCreacionDTO);
 
             _context.Actores.Add(entidad);
-            await _context.SaveChangesAsync();
+            // await _context.SaveChangesAsync();
 
             var dto = _mapper.Map<ActorDTO>(entidad);
 
@@ -66,7 +66,8 @@ namespace PeliculasAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> Put(int id, [FromBody] ActorCreacionDTO actorCreacionDTO) {
+        public async Task<ActionResult> Put(int id, [FromForm] ActorCreacionDTO actorCreacionDTO)
+        {
 
             var entidad = _mapper.Map<Actor>(actorCreacionDTO);
             entidad.Id = id;

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using PeliculasAPI.Validaciones;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -13,6 +15,13 @@ namespace PeliculasAPI.DTOs
         public string Nombre { get; set; }
 
         public DateTime FechaNacimiento { get; set; }
+
+
+        //  [PesoArchivoValidacion(4)] podemos usarlo asi de la forma corta
+        //para subir una foto 
+        [PesoArchivoValidacion(pesoMaximoEnMegaBytes:4)]
+        [TipoArchivoValidacion(TipoArchivo.Imagen)]
+        public IFormFile Foto { get; set; }
 
     }
 }
