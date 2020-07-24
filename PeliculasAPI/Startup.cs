@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using PeliculasAPI.Servicios;
 
 namespace PeliculasAPI
 {
@@ -30,6 +31,12 @@ namespace PeliculasAPI
             //configurar auto mapper
             services.AddAutoMapper(typeof(Startup));
 
+            //configurar servicio azure para guardar fotos en la nube
+            // services.AddTransient<IAlmacenadorArchivos, AlmacenadorArchivosAzure>();
+
+            //configurar servicio para almacenar las fotos de manera local
+            services.AddTransient<IAlmacenadorArchivos, AlmacenadorArchivosLocal>();
+            services.AddHttpContextAccessor();
 
             //configurar dbcontext con sql server
             services.AddDbContext<ApplicationDbContext>(options =>
@@ -47,6 +54,9 @@ namespace PeliculasAPI
             }
 
             app.UseHttpsRedirection();
+
+            //para poder ver la imagen en pantalla de los archivos guardados en wwwroot
+            app.UseStaticFiles();
 
             app.UseRouting();
 

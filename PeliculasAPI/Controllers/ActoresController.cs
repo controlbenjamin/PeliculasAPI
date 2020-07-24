@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -9,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using PeliculasAPI.DTOs;
 using PeliculasAPI.Entidades;
 using PeliculasAPI.Migrations;
+using PeliculasAPI.Servicios;
 
 namespace PeliculasAPI.Controllers
 {
@@ -18,11 +20,15 @@ namespace PeliculasAPI.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
+        private readonly IAlmacenadorArchivos almacenadorArchivos;
+        //nombre de la carpeta donde se van a guardar las fotos de los actores
+        private readonly string contenedor = "Actores";
 
-        public ActoresController(ApplicationDbContext context, IMapper mapper)
+        public ActoresController(ApplicationDbContext context, IMapper mapper, IAlmacenadorArchivos almacenadorArchivos)
         {
             _context = context;
             _mapper = mapper;
+            this.almacenadorArchivos = almacenadorArchivos;
         }
 
         [HttpGet]
@@ -57,8 +63,21 @@ namespace PeliculasAPI.Controllers
 
             var entidad = _mapper.Map<Actor>(actorCreacionDTO);
 
+            if (actorCreacionDTO.Foto != null)
+            {
+
+                using (var memoryStream = new MemoryStream())
+                {
+                    await actorCreacionDTO.Foto.CopyToAsync(memoryStream);
+                    var contenido = memoryStream.ToArray();
+                    var extension = Path.GetExtension(actorCreacionDTO.Foto.FileName);
+                    entidad.Foto = await almacenadorArchivos.GuardarArchivos(contenido, extension, contenedor,
+                        actorCreacionDTO.Foto.ContentType);
+                }
+            }
+
             _context.Actores.Add(entidad);
-            // await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
             var dto = _mapper.Map<ActorDTO>(entidad);
 
@@ -68,12 +87,36 @@ namespace PeliculasAPI.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult> Put(int id, [FromForm] ActorCreacionDTO actorCreacionDTO)
         {
-
+            /* Esto se comenta, porque el usuario no siempre va a actualizar la foto,
+             * sino que podria actualizar otros campos
+              
+             
             var entidad = _mapper.Map<Actor>(actorCreacionDTO);
             entidad.Id = id;
 
             //modificar ese objeto
             _context.Entry(entidad).State = EntityState.Modified;
+            */
+
+
+            var actorDB = _context.Actores.FirstOrDefault(x => x.Id == id);
+
+            if (actorDB == null) { return NotFound(); }
+
+            //vamos a mapear lo que nos mando el usuario con lo que tenemos en la base
+            //entity framework, solo va a guardar los campos que son distintos
+            // los campos que son distintos en el mapeo entre los del objeto de la base
+            //y el dto correspondiente van a ser actualizados
+            actorDB = _mapper.Map(actorCreacionDTO, actorDB);
+
+            using (var memoryStream = new MemoryStream())
+            {
+                await actorCreacionDTO.Foto.CopyToAsync(memoryStream);
+                var contenido = memoryStream.ToArray();
+                var extension = Path.GetExtension(actorCreacionDTO.Foto.FileName);
+                actorDB.Foto = await almacenadorArchivos.EditarArchivo(contenido, extension, contenedor,
+                   actorDB.Foto, actorCreacionDTO.Foto.ContentType);
+            }
 
             await _context.SaveChangesAsync();
 
