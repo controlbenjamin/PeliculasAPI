@@ -52,5 +52,9 @@ D:\APIrest\PeliculasAPI\PeliculasAPI\obj\Debug\netcoreapp3.1\PeliculasAPI.pdb
 D:\APIrest\PeliculasAPI\PeliculasAPI\obj\Debug\netcoreapp3.1\PeliculasAPI.genruntimeconfig.cache
 D:\APIrest\PeliculasAPI\PeliculasAPI\bin\Debug\netcoreapp3.1\AutoMapper.dll
 D:\APIrest\PeliculasAPI\PeliculasAPI\bin\Debug\netcoreapp3.1\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
+D:\APIrest\PeliculasAPI\PeliculasAPI\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.JsonPatch.dll
+D:\APIrest\PeliculasAPI\PeliculasAPI\bin\Debug\netcoreapp3.1\Newtonsoft.Json.dll
+D:\APIrest\PeliculasAPI\PeliculasAPI\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
+D:\APIrest\PeliculasAPI\PeliculasAPI\bin\Debug\netcoreapp3.1\Newtonsoft.Json.Bson.dll
 D:\APIrest\PeliculasAPI\PeliculasAPI\obj\Debug\netcoreapp3.1\PeliculasAPI.csproj.CoreCompileInputs.cache
 D:\APIrest\PeliculasAPI\PeliculasAPI\obj\Debug\netcoreapp3.1\PeliculasAPI.MvcApplicationPartsAssemblyInfo.cache
