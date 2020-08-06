@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PeliculasAPI.DTOs;
 using PeliculasAPI.Entidades;
+using PeliculasAPI.Helpers;
 using PeliculasAPI.Migrations;
 using PeliculasAPI.Servicios;
 
@@ -33,10 +34,14 @@ namespace PeliculasAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<ActorDTO>>> Get()
+        public async Task<ActionResult<List<ActorDTO>>> Get([FromQuery] PaginacionDTO paginacionDTO)
         {
 
-            var entidades = await _context.Actores.ToListAsync();
+            var queriable = _context.Actores.AsQueryable();
+
+            await HttpContext.InsertarParametrosPaginacion(queriable, paginacionDTO.CantidadRegistrosPorPagina);
+
+            var entidades = await queriable.Paginar(paginacionDTO).ToListAsync();
 
             return _mapper.Map<List<ActorDTO>>(entidades);
         }
